@@ -29,14 +29,14 @@ int main(int argc, char *argv[])
     }
     
     // Prints each element of the vector
-    std::cout << "Elements from the vector:" << std::endl;
+    std::cout << "Lines:" << std::endl;
     for (const auto elem : v)
     {
         std::cout << elem << std::endl;
     }
     
     // Uses an istringstream to read each element from the vector a word at a time
-    std::cout << "Words from each element:" << std::endl;
+    std::cout << "Words:" << std::endl;
     for (const auto line : v) 
     {
         std::istringstream iss(line);
