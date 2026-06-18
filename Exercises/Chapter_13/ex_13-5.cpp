@@ -8,12 +8,22 @@
  * which ps points.
  *
  * Exercise 13.11: Add a destructor to your HasPtr class from the previous exercises.
+ * 
+ * Exercise 13.30: Write and test a swap function for your valuelike version of HasPtr.
+ * Give your swap a print statement that notes when it is executed.
+ *
+ * Exercise 13.31: Give your class a < operator and define a vector of HasPtrs. Give
+ * that vector some elements and then sort the vector. Note when swap is called.
  */
  
 #include <string>
+#include <vector>
+#include <iostream>
+#include <algorithm>
 
 class HasPtr
 {
+friend void swap(HasPtr&, HasPtr&);
 public:
     // constructor
     HasPtr(const std::string &s = std::string()):
@@ -24,22 +34,50 @@ public:
         ps(new std::string(*(hp.ps))), i(hp.i) { }
     
     // copy-assignment operator
-    HasPtr& operator=(const HasPtr& hp)
+    HasPtr& operator=(HasPtr hp)
     { 
-        if (this != &hp)  // handles self-assignment
-        {
-            std::string* new_ps = new std::string(*(hp.ps));  // allocates new memory
-            delete ps;  // frees old memory
-            ps = new_ps;
-            i = hp.i;
-        }
+        swap(*this, hp); 
         return *this;
     }
+
     
     // destructor
-    ~HasPtr() { delete ps }
+    ~HasPtr() { delete ps; }
     
-private:
+    // less than operator
+    bool operator<(const HasPtr& rhs) const { return *ps < *rhs.ps; }
+    
     std::string *ps;
     int i;
 };
+
+inline
+void swap(HasPtr& lhs, HasPtr& rhs)
+{
+    std::cout << "swapping " << *lhs.ps << " and " << *rhs.ps << '\n';
+    using std::swap;
+    swap(lhs.ps, rhs.ps);
+    swap(lhs.i, rhs.i);
+}
+
+int main()
+{
+    std::vector<HasPtr> v;
+    
+    v.emplace_back("pedro");
+    v.emplace_back("julia");
+    v.emplace_back("popo");
+    v.emplace_back("jessica");
+    v.emplace_back("raica");
+    v.emplace_back("augusto");
+    v.emplace_back("xhop");
+    
+    std::sort(v.begin(), v.end());
+    
+    std::cout << "\nsorted vector:\n";
+    for (const auto& hp : v)
+        std::cout << *hp.ps << " ";
+    std::cout << std::endl;
+    
+    return 0;
+}
